@@ -1,0 +1,33 @@
+$white-color: #fff;
+$black-color: black;
+$gray-color: #8a7b7b;
+$orange-color: #cc5520;
+$buttons-orange-color: #ff3d00;
+$cream-color: #ffe9d0;
+
+$h1-size: 2.5rem;
+$h1-subtext-size: 1.25rem; // 20px
+$h2-size: 1.6rem; // 26px
+$sub-text-size: 1.12rem; // 18px
+$regular-text-size: 1rem;
+$mobile-navigation: 2rem;
+
+$text-weight_700: 700;
+$text-weight_400: 400;
+$text-weight_200: 200;
+
+$padding_3rem: 3rem;
+$padding_2rem: 2rem;
+$padding_1rem: 1rem;
+
+$margin_3rem: 3rem;
+$margin_2rem: 2rem;
+$margin_1rem: 1rem;
+
+$web: 760px;
+
+// @mixin web {
+//   @media (min-width: 900px) {
+//     @content;
+//   }
+// }
