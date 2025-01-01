@@ -67,7 +67,7 @@ function displayWeather(data) {
   const weatherImage = createElementWithClass("div", "weather__image");
 
   const weatherImg = document.createElement("img");
-  weatherImg.src = `/img/${getWeatherImg(id)}.svg`;
+  weatherImg.src = `img/${getWeatherImg(id)}.svg`;
 
   weatherCurrent.append(weatherDisplay);
   weatherDisplay.append(displayCard);
@@ -107,7 +107,7 @@ function displayForecast(data) {
     const nightLovest = createElementWithClass("div", "weather__day-info", "Night");
 
     const weatherImg = document.createElement("img");
-    weatherImg.src = `/img/${getWeatherImg(id)}.svg`;
+    weatherImg.src = `img/${getWeatherImg(id)}.svg`;
 
     weatherForecast.append(weatherDays);
     weatherDays.append(weatherDayName, weatherImage);
