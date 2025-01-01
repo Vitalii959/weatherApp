@@ -151,7 +151,7 @@ svg {
   height: 100%;
 }
 
-html {
+body {
   font-family: "Roboto", system-ui;
   font-weight: var(--text-weight_400);
   font-style: normal;
@@ -159,7 +159,7 @@ html {
 }
 
 .container {
-  max-width: 400px;
+  max-width: 375px;
   margin: 0 auto;
 }
 
@@ -169,7 +169,7 @@ html {
   flex-direction: column;
 }
 .weather__logo {
-  width: 30%;
+  width: 45%;
   margin: 40px auto;
 }
 .weather__search {
@@ -181,6 +181,14 @@ html {
   border: 1px solid #ABABAB;
   border-radius: 1em;
   padding: 15px;
+  font-size: inherit;
+}
+.weather__search-btn {
+  position: absolute;
+  right: 60px;
+  top: 9px;
+  width: 22px;
+  margin: 5px;
 }
 .weather__clean-btn {
   position: absolute;
@@ -188,9 +196,11 @@ html {
   top: 12px;
   padding: 4px;
   display: inline-block;
-  transform: scaleX(1.4);
+  transform: scaleX(1.5);
   font-weight: 100;
   color: #555252;
+  font-size: 22px;
+  font-weight: 200;
   cursor: pointer;
 }
 .weather__city-selected {
@@ -268,6 +278,7 @@ html {
 }
 .weather__day-condition {
   width: 130px;
+  font-size: 1.1rem;
   text-align: center;
   text-transform: capitalize;
 }
@@ -276,8 +287,9 @@ html {
   flex-direction: column;
   row-gap: 7px;
   align-items: end;
+  font-size: 20px;
 }
 .weather__day-info {
-  font-size: 10px;
+  font-size: 13px;
   color: #555252;
 }/*# sourceMappingURL=style.css.map */

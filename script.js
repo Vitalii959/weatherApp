@@ -2,33 +2,39 @@ const citySelected = document.querySelector(".weather__city-selected-text");
 const inputClear = document.querySelector(".weather__clean-btn");
 const cityInput = document.querySelector(".weather__input");
 const weatherCurrent = document.querySelector(".weather__current");
+const searchBtn = document.querySelector(".weather__search-btn");
 
 const apiKey = "b10e79705c099860a980640a091a6fcf";
 
 inputClear.addEventListener("click", clearWindow);
 
-cityInput.addEventListener("keydown", loadingWeatherData);
-
-async function loadingWeatherData(e) {
-  const city = cityInput.value.trim();
-  const isOnlyLetters = /^[A-Za-z]+$/.test(city);
-
+cityInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
-    weatherCurrent.textContent = "";
+    loadingWeatherData();
+  }
+});
 
-    if (city && isOnlyLetters) {
-      try {
-        const weatherData = await getWeatherData(city, "weather");
-        const forecastData = await getWeatherData(city, "forecast");
+searchBtn.addEventListener("click", loadingWeatherData);
 
-        displayWeather(weatherData);
-        displayForecast(forecastData);
-      } catch (error) {
-        displayError(error);
-      }
-    } else {
-      displayError("Please enter valid city name");
+async function loadingWeatherData() {
+  const city = cityInput.value.trim();
+  const isOnlyLetters = /^[A-Za-z\s]+$/.test(city);
+  console.log(isOnlyLetters);
+
+  weatherCurrent.textContent = "";
+
+  if (city && isOnlyLetters) {
+    try {
+      const weatherData = await getWeatherData(city, "weather");
+      const forecastData = await getWeatherData(city, "forecast");
+
+      displayWeather(weatherData);
+      displayForecast(forecastData);
+    } catch (error) {
+      displayError(error);
     }
+  } else {
+    displayError("Please enter valid city name");
   }
 }
 
