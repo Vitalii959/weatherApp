@@ -17,10 +17,26 @@
 
     }
 
+    &__sugesting-cities {
+
+        overflow-y: scroll;
+    }
+
+    &__sugesting-list {
+        max-height: 160px;
+    }
+
+    &__sugesting-items {
+        padding: 5px 15px;
+        background-color: #c1c1c16b;
+        border-radius: 10px;
+        margin: 7px 7px;
+    }
+
     &__input {
         width: 100%;
         border: 1px solid #ABABAB;
-        border-radius: 1em;
+        border-radius: 1em 1em 0 0;
         padding: 15px;
         font-size: inherit;
     }

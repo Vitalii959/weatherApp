@@ -177,10 +177,22 @@ body {
   width: 100%;
   position: relative;
 }
+.weather__sugesting-cities {
+  overflow-y: scroll;
+}
+.weather__sugesting-list {
+  max-height: 160px;
+}
+.weather__sugesting-items {
+  padding: 5px 15px;
+  background-color: rgba(193, 193, 193, 0.4196078431);
+  border-radius: 10px;
+  margin: 7px 7px;
+}
 .weather__input {
   width: 100%;
   border: 1px solid #ABABAB;
-  border-radius: 1em;
+  border-radius: 1em 1em 0 0;
   padding: 15px;
   font-size: inherit;
 }

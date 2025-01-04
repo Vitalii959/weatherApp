@@ -1,32 +1,76 @@
-const citySelected = document.querySelector(".weather__city-selected-text");
-const inputClear = document.querySelector(".weather__clean-btn");
-const cityInput = document.querySelector(".weather__input");
+const showSelectedCity = document.querySelector(".weather__city-selected-text");
+const clearBtn = document.querySelector(".weather__clean-btn");
+const weatherSugestionList = document.querySelector(".weather__sugesting-list");
+const cityNameInput = document.querySelector(".weather__input");
 const weatherCurrent = document.querySelector(".weather__current");
 const searchBtn = document.querySelector(".weather__search-btn");
 
 const apiKey = "b10e79705c099860a980640a091a6fcf";
 
-inputClear.addEventListener("click", clearWindow);
+let citySelected = "";
+let filteredCities = [];
 
-cityInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    loadingWeatherData();
-  }
+clearBtn.addEventListener("click", () => {
+  clearWindow();
+  weatherSugestionList.style.display = "none";
 });
 
-searchBtn.addEventListener("click", loadingWeatherData);
+cityNameInput.addEventListener("keyup", showSuggestingCityList);
+cityNameInput.addEventListener("click", () => (weatherSugestionList.style.display = "block"));
+weatherSugestionList.addEventListener("click", showWeather);
 
-async function loadingWeatherData() {
-  const city = cityInput.value.trim();
-  const isOnlyLetters = /^[A-Za-z\s]+$/.test(city);
-  console.log(isOnlyLetters);
+async function showSuggestingCityList() {
+  citySelected = cityNameInput.value;
+
+  if (citySelected.length >= 3) {
+    try {
+      filteredCities = await loadSuggestionList(citySelected);
+
+      displaySugestionCity(filteredCities);
+    } catch (error) {
+      displayError(`Could not load suggestion cities list: ${error}`);
+    }
+  } else {
+    filteredCities = [];
+    weatherSugestionList.textContent = "";
+  }
+}
+
+function showWeather(e) {
+  const indexOfSelectedCity = getIndexOfSelectedCity(e);
+
+  loadWeatherData(filteredCities[indexOfSelectedCity]);
+  weatherSugestionList.style.display = "none";
+}
+function getIndexOfSelectedCity(e) {
+  const child = Array.from(weatherSugestionList.children);
+  const index = child.indexOf(e.target);
+  return index;
+}
+
+async function loadSuggestionList(cityName) {
+  try {
+    const cityListData = await fetchSuggestionCityList();
+
+    const sortData = cityListData.filter((city) => city.name.toLowerCase().startsWith(cityName));
+
+    return sortData;
+  } catch (error) {
+    displayError(error);
+  }
+}
+
+async function loadWeatherData(chossenCity) {
+  const {
+    coord: { lon, lat },
+  } = chossenCity;
 
   weatherCurrent.textContent = "";
 
-  if (city && isOnlyLetters) {
+  if (chossenCity) {
     try {
-      const weatherData = await getWeatherData(city, "weather");
-      const forecastData = await getWeatherData(city, "forecast");
+      const weatherData = await getWeatherData(lon, lat, "weather");
+      const forecastData = await getWeatherData(lon, lon, "forecast");
 
       displayWeather(weatherData);
       displayForecast(forecastData);
@@ -38,16 +82,38 @@ async function loadingWeatherData() {
   }
 }
 
-async function getWeatherData(city, type) {
-  const weatherUrl = `https://api.openweathermap.org/data/2.5/${type}?q=${city}&appid=${apiKey}`;
+async function fetchSuggestionCityList() {
+  const cityList = "./city.list.json";
+
+  const response = await fetch(cityList);
+  if (!response.ok) {
+    throw new Error("Could not fetch sugestion cities");
+  }
+
+  return await response.json();
+}
+
+async function getWeatherData(lon, lat, type) {
+  const weatherUrl = `https://api.openweathermap.org/data/2.5/${type}?lat=${lat}&lon=${lon}&appid=${apiKey}`;
 
   const response = await fetch(weatherUrl);
-  console.log(response);
 
   if (!response.ok) {
     throw new Error("Could not fetch weather data");
   }
   return await response.json();
+}
+
+function displaySugestionCity(data) {
+  weatherSugestionList.textContent = "";
+
+  data.forEach((cities) => {
+    const { name: name, state: state, country: country } = cities;
+
+    const citiesList = createElementWithClass("li", "weather__sugesting-items", `${name}, ${state}, ${country}`);
+
+    weatherSugestionList.append(citiesList);
+  });
 }
 
 function displayWeather(data) {
@@ -58,7 +124,8 @@ function displayWeather(data) {
     weather: [{ id, description }],
   } = data;
 
-  citySelected.textContent = ` ${city}, ${country}`;
+  showSelectedCity.textContent = ` ${city}, ${country}`;
+  cityNameInput.value = ` ${city}, ${country}`;
 
   const realTemperature = toCelsius(temp);
   const feelsLikeTemperature = toCelsius(feels_like);
@@ -153,7 +220,7 @@ function getWeatherImg(weatherId) {
 }
 
 function displayError(message) {
-  citySelected.textContent = "";
+  showSelectedCity.textContent = "";
 
   const weatherDisplay = createElementWithClass("div", "weather__display");
   const errorDisplay = createElementWithClass("p", "error", message);
@@ -175,8 +242,8 @@ function getDayName(dateStr) {
 }
 
 function clearWindow() {
-  cityInput.value = "";
-  citySelected.textContent = "";
+  cityNameInput.value = "";
+  showSelectedCity.textContent = "";
   weatherCurrent.textContent = "";
 }
 
