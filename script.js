@@ -3,7 +3,7 @@ const clearBtn = document.querySelector(".weather__clean-btn");
 const weatherSugestionList = document.querySelector(".weather__sugesting-list");
 const cityNameInput = document.querySelector(".weather__input");
 const weatherCurrent = document.querySelector(".weather__current");
-const searchBtn = document.querySelector(".weather__search-btn");
+const searchBtn = document.querySelector(".weather__current-loc-btn");
 
 const apiKey = "b10e79705c099860a980640a091a6fcf";
 
@@ -14,13 +14,13 @@ clearBtn.addEventListener("click", () => {
   clearWindow();
   weatherSugestionList.style.display = "none";
 });
-
+searchBtn.addEventListener("click", loadCurrentPosition);
 cityNameInput.addEventListener("keyup", showSuggestingCityList);
 cityNameInput.addEventListener("click", () => (weatherSugestionList.style.display = "block"));
 weatherSugestionList.addEventListener("click", showWeather);
 
 async function showSuggestingCityList() {
-  citySelected = cityNameInput.value;
+  citySelected = cityNameInput.value.toLowerCase();
 
   if (citySelected.length >= 3) {
     try {
@@ -39,7 +39,11 @@ async function showSuggestingCityList() {
 function showWeather(e) {
   const indexOfSelectedCity = getIndexOfSelectedCity(e);
 
-  loadWeatherData(filteredCities[indexOfSelectedCity]);
+  const {
+    coord: { lon, lat },
+  } = filteredCities[indexOfSelectedCity];
+
+  loadWeatherData(lon, lat);
   weatherSugestionList.style.display = "none";
 }
 function getIndexOfSelectedCity(e) {
@@ -60,14 +64,8 @@ async function loadSuggestionList(cityName) {
   }
 }
 
-async function loadWeatherData(chossenCity) {
-  const {
-    coord: { lon, lat },
-  } = chossenCity;
-
-  weatherCurrent.textContent = "";
-
-  if (chossenCity) {
+async function loadWeatherData(lon, lat) {
+  if (lon && lat) {
     try {
       const weatherData = await getWeatherData(lon, lat, "weather");
       const forecastData = await getWeatherData(lon, lon, "forecast");
@@ -81,6 +79,14 @@ async function loadWeatherData(chossenCity) {
     displayError("Please enter valid city name");
   }
 }
+function loadCurrentPosition() {
+  weatherCurrent.textContent = "Loading...";
+  const currentPos = navigator.geolocation.getCurrentPosition((position) => {
+    const { latitude, longitude } = position.coords;
+    console.log();
+    loadWeatherData(longitude, latitude);
+  });
+}
 
 async function fetchSuggestionCityList() {
   const cityList = "./city.list.json";
@@ -89,6 +95,7 @@ async function fetchSuggestionCityList() {
   if (!response.ok) {
     throw new Error("Could not fetch sugestion cities");
   }
+  // console.log(await response.json());
 
   return await response.json();
 }
@@ -123,6 +130,9 @@ function displayWeather(data) {
     main: { feels_like, temp },
     weather: [{ id, description }],
   } = data;
+  console.log(data);
+
+  weatherCurrent.textContent = "";
 
   showSelectedCity.textContent = ` ${city}, ${country}`;
   cityNameInput.value = ` ${city}, ${country}`;

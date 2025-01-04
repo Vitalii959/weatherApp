@@ -196,7 +196,7 @@ body {
   padding: 15px;
   font-size: inherit;
 }
-.weather__search-btn {
+.weather__current-loc-btn {
   position: absolute;
   right: 60px;
   top: 9px;
