@@ -81,11 +81,18 @@ async function loadWeatherData(lon, lat) {
 }
 function loadCurrentPosition() {
   weatherCurrent.textContent = "Loading...";
-  const currentPos = navigator.geolocation.getCurrentPosition((position) => {
-    const { latitude, longitude } = position.coords;
-    console.log();
-    loadWeatherData(longitude, latitude);
-  });
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const { latitude, longitude } = position.coords; // Corrected typo: "coord" -> "coords"
+      console.log("Latitude:", latitude, "Longitude:", longitude);
+      loadWeatherData(longitude, latitude);
+    },
+    (error) => {
+      console.error("Geolocation Error:", error);
+      weatherCurrent.textContent = "Please enable location services.";
+    }
+  );
 }
 
 async function fetchSuggestionCityList() {
