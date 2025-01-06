@@ -22,7 +22,7 @@ weatherSugestionList.addEventListener("click", showWeather);
 async function showSuggestingCityList() {
   citySelected = cityNameInput.value.toLowerCase();
 
-  if (citySelected.length >= 3) {
+  if (citySelected.length >= 2) {
     try {
       filteredCities = await loadSuggestionList(citySelected);
 
@@ -54,9 +54,9 @@ function getIndexOfSelectedCity(e) {
 
 async function loadSuggestionList(cityName) {
   try {
-    const cityListData = await fetchSuggestionCityList();
+    const cityListData = await getSuggestionCityList();
 
-    const sortData = cityListData.filter((city) => city.name.toLowerCase().startsWith(cityName));
+    const sortData = cityListData.filter((city) => city.name.toLowerCase().includes(cityName));
 
     return sortData;
   } catch (error) {
@@ -80,12 +80,13 @@ async function loadWeatherData(lon, lat) {
   }
 }
 function loadCurrentPosition() {
+  weatherSugestionList.style.display = "none";
   weatherCurrent.textContent = "Loading...";
+  navigator.geolocation.getCurrentPosition;
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
-      const { latitude, longitude } = position.coords; // Corrected typo: "coord" -> "coords"
-      console.log("Latitude:", latitude, "Longitude:", longitude);
+      const { latitude, longitude } = position.coords;
       loadWeatherData(longitude, latitude);
     },
     (error) => {
@@ -95,7 +96,7 @@ function loadCurrentPosition() {
   );
 }
 
-async function fetchSuggestionCityList() {
+async function getSuggestionCityList() {
   const cityList = "./city.list.json";
 
   const response = await fetch(cityList);
@@ -108,7 +109,7 @@ async function fetchSuggestionCityList() {
 }
 
 async function getWeatherData(lon, lat, type) {
-  const weatherUrl = `https://api.openweathermap.org/data/2.5/${type}?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+  const weatherUrl = `https://api.openweathermap.org/data/2.5/${type}?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
 
   const response = await fetch(weatherUrl);
 
@@ -137,7 +138,6 @@ function displayWeather(data) {
     main: { feels_like, temp },
     weather: [{ id, description }],
   } = data;
-  console.log(data);
 
   weatherCurrent.textContent = "";
 
@@ -237,6 +237,7 @@ function getWeatherImg(weatherId) {
 }
 
 function displayError(message) {
+  weatherCurrent.textContent = "";
   showSelectedCity.textContent = "";
 
   const weatherDisplay = createElementWithClass("div", "weather__display");
@@ -249,7 +250,7 @@ function displayError(message) {
 // helper functions for converting and creating elements
 
 function toCelsius(t) {
-  return (t - 273).toFixed(0);
+  return t.toFixed(0);
 }
 
 function getDayName(dateStr) {
