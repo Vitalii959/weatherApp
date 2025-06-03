@@ -63,7 +63,7 @@ export function displayForecast(data) {
       main: { temp_max, temp_min },
       weather: [{ id, description }],
     } = day;
-    console.log(data);
+
     const shortDayName = getDayName(dt_txt).toUpperCase();
     const dayMaxValue = toCelsius(temp_max);
     const nightMinValue = toCelsius(temp_min);
