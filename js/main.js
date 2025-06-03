@@ -1,5 +1,4 @@
-import { displaySugestionCity, displayWeather, displayForecast, displayError } from "../js/displayData.js";
-import { getIndexOfSelectedCity } from "./helperFunctions.js";
+import {CONFIG} from "./config.js"
 import { loadChosenCity, loadCurrentPosition, loadWeatherData, loadSuggestingCityList } from "./loadData.js";
 
 export const showSelectedCity = document.querySelector(".weather__city-selected-text");
@@ -9,7 +8,7 @@ export const cityNameInput = document.querySelector(".weather__input");
 export const weatherCurrent = document.querySelector(".weather__current");
 export const currentLocationBtn = document.querySelector(".weather__current-loc-btn");
 
-export const apiKey = "b10e79705c099860a980640a091a6fcf";
+export const apiKey = CONFIG.API_KEY;
 
 export let citySelected = "";
 export let filteredCities = [];
